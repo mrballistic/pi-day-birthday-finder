@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
+import { DISPLAY_WINDOW } from '@/lib/constants';
 
 /** Props for the {@link DigitStream} component. */
 interface DigitStreamProps {
@@ -39,18 +40,17 @@ export default function DigitStream({
   const charWidth = isMobile ? 12 : 16;
   const fontSize = isMobile ? 14 : 18;
 
-  const rows = useMemo(() => {
-    const charsPerRow = Math.ceil(digits.length / rowCount);
+  const { rows, charsPerRow } = useMemo(() => {
+    const cpRow = digits.length > 0 ? Math.ceil(digits.length / rowCount) : 1;
     const result: string[] = [];
     for (let i = 0; i < rowCount; i++) {
-      result.push(digits.slice(i * charsPerRow, (i + 1) * charsPerRow));
+      result.push(digits.slice(i * cpRow, (i + 1) * cpRow));
     }
-    return result;
+    return { rows: result, charsPerRow: cpRow };
   }, [digits, rowCount]);
 
   const matchStart = matchPosition ? matchPosition - 1 : -1;
   const matchEnd = matchStart + matchLength;
-  const charsPerRow = Math.ceil(digits.length / rowCount);
 
   return (
     <Box
@@ -130,7 +130,7 @@ export default function DigitStream({
             top: 0,
             bottom: 0,
             width: 2,
-            left: `${((currentPosition % 60) / 60) * 100}%`,
+            left: `${((currentPosition % DISPLAY_WINDOW) / DISPLAY_WINDOW) * 100}%`,
             backgroundColor: 'var(--neon-blue)',
             boxShadow: '0 0 20px cyan, 0 0 40px cyan',
             transition: 'left 0.05s linear',

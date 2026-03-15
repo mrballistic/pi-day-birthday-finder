@@ -5,6 +5,7 @@ import { Box, Button, Chip, Snackbar, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { SearchResult } from '@/lib/searchStrategies';
 import { generateFunFact } from '@/lib/funFacts';
+import { RESULT_CARD_DELAY_MS, COUNTER_ANIMATION_MS, CONTEXT_MARGIN, GRADIENT_PRIMARY, GRADIENT_PRIMARY_HOVER } from '@/lib/constants';
 import ConfettiExplosion from './ConfettiExplosion';
 
 /** Props for the {@link ResultCard} component. */
@@ -32,7 +33,7 @@ export default function ResultCard({ result, piDigits, onReset }: ResultCardProp
 
   // Delay card appearance
   useEffect(() => {
-    const timer = setTimeout(() => setShowCard(true), 1500);
+    const timer = setTimeout(() => setShowCard(true), RESULT_CARD_DELAY_MS);
     return () => clearTimeout(timer);
   }, []);
 
@@ -42,12 +43,11 @@ export default function ResultCard({ result, piDigits, onReset }: ResultCardProp
     animatedRef.current = true;
 
     const target = result.position;
-    const duration = 1500;
     const start = performance.now();
 
     const tick = (now: number) => {
       const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
+      const progress = Math.min(elapsed / COUNTER_ANIMATION_MS, 1);
       // Ease out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       setDisplayCount(Math.floor(eased * target));
@@ -59,8 +59,8 @@ export default function ResultCard({ result, piDigits, onReset }: ResultCardProp
 
   // Build context strip
   const pos0 = result.position - 1; // 0-indexed
-  const contextStart = Math.max(0, pos0 - 20);
-  const contextEnd = Math.min(piDigits.length, pos0 + 20);
+  const contextStart = Math.max(0, pos0 - CONTEXT_MARGIN);
+  const contextEnd = Math.min(piDigits.length, pos0 + CONTEXT_MARGIN);
   const contextDigits = piDigits.slice(contextStart, contextEnd);
   const highlightStart = pos0 - contextStart;
   const highlightEnd = highlightStart + result.matchString.length;
@@ -195,9 +195,9 @@ export default function ResultCard({ result, piDigits, onReset }: ResultCardProp
                 onClick={handleShare}
                 sx={{
                   px: 4,
-                  background: 'linear-gradient(135deg, #00d4ff, #b24bff)',
+                  background: GRADIENT_PRIMARY,
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #00b8e6, #9a3de6)',
+                    background: GRADIENT_PRIMARY_HOVER,
                   },
                 }}
               >

@@ -4,6 +4,7 @@ import { Box, LinearProgress, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import DigitStream from './DigitStream';
 import PiTriviaTicker from './PiTriviaTicker';
+import { PI_DIGIT_COUNT } from '@/lib/constants';
 
 /** Props for the {@link ScanAnimation} component. */
 interface ScanAnimationProps {
@@ -34,7 +35,7 @@ export default function ScanAnimation({
   matchPosition,
   matchLength,
 }: ScanAnimationProps) {
-  const progress = (currentPosition / 5_000_000) * 100;
+  const progress = (currentPosition / PI_DIGIT_COUNT) * 100;
 
   return (
     <motion.div
@@ -87,7 +88,7 @@ export default function ScanAnimation({
               mb: 1,
             }}
           >
-            Scanning digit {currentPosition.toLocaleString()} of 5,000,000
+            Scanning digit {currentPosition.toLocaleString()} of {PI_DIGIT_COUNT.toLocaleString()}
           </Typography>
           <LinearProgress
             variant="determinate"

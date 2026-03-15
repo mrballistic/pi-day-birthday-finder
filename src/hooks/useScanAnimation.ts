@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { SCAN_DURATION_MS, DISPLAY_WINDOW, CONTEXT_MARGIN } from '@/lib/constants';
+import { scanEase } from '@/lib/utils';
 
 /** Internal state of the scan animation. */
 interface ScanState {
@@ -19,15 +21,31 @@ interface ScanState {
 /** Return value of the {@link useScanAnimation} hook. */
 interface UseScanAnimationReturn extends ScanState {
   /** Begins the scan animation targeting the given match position. */
-  startScan: (piDigits: string, matchPosition: number, matchLength: number) => void;
+  startScan: (piDigits: string, matchPosition: number) => void;
   /** Resets the animation back to idle state. */
   reset: () => void;
 }
 
-/** Total duration of the scan animation in milliseconds. */
-const SCAN_DURATION_MS = 6000;
-/** Number of digits shown in the sliding display window. */
-const DISPLAY_WINDOW = 60;
+const INITIAL_STATE: ScanState = {
+  isScanning: false,
+  currentPosition: 0,
+  displayDigits: '',
+  scanComplete: false,
+  phase: 'idle',
+};
+
+/** Returns a display-ready slice of pi digits centered on the given position. */
+function getDisplaySlice(piDigits: string, centerPos: number): string {
+  const start = Math.max(0, centerPos - CONTEXT_MARGIN);
+  return piDigits.slice(start, start + DISPLAY_WINDOW);
+}
+
+/** Maps linear progress (0–1) to a speed phase label. */
+function getPhase(progress: number): ScanState['phase'] {
+  if (progress >= 0.7) return 'slowdown';
+  if (progress >= 0.15) return 'fast';
+  return 'slow-start';
+}
 
 /**
  * Hook that drives the cosmetic digit-scanning animation.
@@ -41,46 +59,30 @@ const DISPLAY_WINDOW = 60;
  * Respects `prefers-reduced-motion` by skipping directly to the result.
  */
 export function useScanAnimation(): UseScanAnimationReturn {
-  const [state, setState] = useState<ScanState>({
-    isScanning: false,
-    currentPosition: 0,
-    displayDigits: '',
-    scanComplete: false,
-    phase: 'idle',
-  });
+  const [state, setState] = useState<ScanState>(INITIAL_STATE);
 
   const rafRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
   const piDigitsRef = useRef<string>('');
   const matchPosRef = useRef<number>(0);
-  const matchLenRef = useRef<number>(0);
 
   const reset = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    setState({
-      isScanning: false,
-      currentPosition: 0,
-      displayDigits: '',
-      scanComplete: false,
-      phase: 'idle',
-    });
+    setState(INITIAL_STATE);
   }, []);
 
-  const startScan = useCallback((piDigits: string, matchPosition: number, matchLength: number) => {
+  const startScan = useCallback((piDigits: string, matchPosition: number) => {
     piDigitsRef.current = piDigits;
     matchPosRef.current = matchPosition - 1; // convert to 0-indexed
-    matchLenRef.current = matchLength;
     startTimeRef.current = performance.now();
 
-    // Check prefers-reduced-motion
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) {
+    // Skip animation for reduced-motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       const pos = matchPosition - 1;
-      const start = Math.max(0, pos - 20);
       setState({
         isScanning: false,
         currentPosition: matchPosition,
-        displayDigits: piDigits.slice(start, start + DISPLAY_WINDOW),
+        displayDigits: getDisplaySlice(piDigits, pos),
         scanComplete: true,
         phase: 'complete',
       });
@@ -99,34 +101,13 @@ export function useScanAnimation(): UseScanAnimationReturn {
       const elapsed = now - startTimeRef.current;
       const progress = Math.min(elapsed / SCAN_DURATION_MS, 1);
       const matchPos = matchPosRef.current;
-
-      // Easing: slow start, fast middle, slow end
-      let easedProgress: number;
-      if (progress < 0.15) {
-        // Slow start
-        easedProgress = progress * progress * (1 / 0.15);
-      } else if (progress < 0.7) {
-        // Fast middle
-        const t = (progress - 0.15) / 0.55;
-        easedProgress = 0.15 + t * 0.7;
-      } else {
-        // Dramatic slowdown near end
-        const t = (progress - 0.7) / 0.3;
-        easedProgress = 0.85 + t * t * 0.15;
-      }
-
-      const currentPos = Math.floor(easedProgress * matchPos);
-      const start = Math.max(0, currentPos - 20);
-
-      let phase: ScanState['phase'] = 'slow-start';
-      if (progress >= 0.7) phase = 'slowdown';
-      else if (progress >= 0.15) phase = 'fast';
+      const currentPos = Math.floor(scanEase(progress) * matchPos);
 
       if (progress >= 1) {
         setState({
           isScanning: false,
           currentPosition: matchPos + 1,
-          displayDigits: piDigits.slice(Math.max(0, matchPos - 20), Math.max(0, matchPos - 20) + DISPLAY_WINDOW),
+          displayDigits: getDisplaySlice(piDigits, matchPos),
           scanComplete: true,
           phase: 'complete',
         });
@@ -136,9 +117,9 @@ export function useScanAnimation(): UseScanAnimationReturn {
       setState({
         isScanning: true,
         currentPosition: currentPos + 1,
-        displayDigits: piDigits.slice(start, start + DISPLAY_WINDOW),
+        displayDigits: getDisplaySlice(piDigits, currentPos),
         scanComplete: false,
-        phase,
+        phase: getPhase(progress),
       });
 
       rafRef.current = requestAnimationFrame(animate);

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { CONFETTI_COLORS_CENTER, CONFETTI_COLORS_SIDE } from '@/lib/constants';
 
 /**
  * Fires a multi-burst confetti explosion on mount using dynamically imported `canvas-confetti`.
@@ -21,7 +22,7 @@ export default function ConfettiExplosion() {
         particleCount: 150,
         spread: 100,
         origin: { y: 0.6 },
-        colors: ['#ffd700', '#00d4ff', '#ff2d95', '#ffffff'],
+        colors: CONFETTI_COLORS_CENTER,
       });
 
       // Side bursts
@@ -32,14 +33,14 @@ export default function ConfettiExplosion() {
           angle: 60,
           spread: 55,
           origin: { x: 0, y: 0.7 },
-          colors: ['#ffd700', '#00d4ff', '#b24bff'],
+          colors: CONFETTI_COLORS_SIDE,
         });
         confetti({
           particleCount: 80,
           angle: 120,
           spread: 55,
           origin: { x: 1, y: 0.7 },
-          colors: ['#ffd700', '#00d4ff', '#b24bff'],
+          colors: CONFETTI_COLORS_SIDE,
         });
       }, 300);
     };

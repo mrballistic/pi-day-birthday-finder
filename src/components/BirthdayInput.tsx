@@ -6,6 +6,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { motion } from 'framer-motion';
+import { GRADIENT_PRIMARY, GRADIENT_PRIMARY_HOVER } from '@/lib/constants';
 
 /** Props for the {@link BirthdayInput} component. */
 interface BirthdayInputProps {
@@ -130,9 +131,9 @@ export default function BirthdayInput({ onSearch, disabled, loading }: BirthdayI
             px: 5,
             py: 1.5,
             fontSize: '1.1rem',
-            background: 'linear-gradient(135deg, #00d4ff, #b24bff)',
+            background: GRADIENT_PRIMARY,
             '&:hover': {
-              background: 'linear-gradient(135deg, #00b8e6, #9a3de6)',
+              background: GRADIENT_PRIMARY_HOVER,
               transform: 'scale(1.05)',
               boxShadow: '0 0 30px rgba(0, 212, 255, 0.4)',
             },

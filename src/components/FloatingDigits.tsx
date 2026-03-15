@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
+import { randomDigit } from '@/lib/utils';
 
 /** A single floating digit particle rendered on the canvas. */
 interface Particle {
@@ -45,7 +46,7 @@ export default function FloatingDigits() {
     particlesRef.current = Array.from({ length: count }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      digit: Math.floor(Math.random() * 10).toString(),
+      digit: randomDigit(),
       speed: 0.2 + Math.random() * 0.5,
       opacity: 0.03 + Math.random() * 0.08,
       size: 14 + Math.random() * 24,
@@ -64,7 +65,7 @@ export default function FloatingDigits() {
           if (p.y < -30) {
             p.y = canvas.height + 30;
             p.x = Math.random() * canvas.width;
-            p.digit = Math.floor(Math.random() * 10).toString();
+            p.digit = randomDigit();
           }
         }
       }

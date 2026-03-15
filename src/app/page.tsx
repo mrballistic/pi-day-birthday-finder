@@ -10,6 +10,7 @@ import FloatingDigits from '@/components/FloatingDigits';
 import { usePiSearch } from '@/hooks/usePiSearch';
 import { useScanAnimation } from '@/hooks/useScanAnimation';
 import { searchPiDigits } from '@/lib/searchStrategies';
+import { SCAN_TO_RESULT_DELAY_MS } from '@/lib/constants';
 
 /** The three phases of the app's state machine. */
 type Phase = 'input' | 'scanning' | 'result';
@@ -32,13 +33,13 @@ export default function Home() {
   const handleSearchComplete = useCallback(
     (birthday: Date) => {
       if (!piDigits) return;
-      search(birthday);
 
       const searchResult = searchPiDigits(piDigits, birthday);
       if (searchResult) {
+        search(birthday); // stores result in hook state for Phase 3
         transitionedRef.current = false;
         setPhase('scanning');
-        scan.startScan(piDigits, searchResult.position, searchResult.matchString.length);
+        scan.startScan(piDigits, searchResult.position);
       }
     },
     [piDigits, search, scan]
@@ -48,7 +49,7 @@ export default function Home() {
   useEffect(() => {
     if (scan.scanComplete && phase === 'scanning' && !transitionedRef.current) {
       transitionedRef.current = true;
-      const timer = setTimeout(() => setPhase('result'), 500);
+      const timer = setTimeout(() => setPhase('result'), SCAN_TO_RESULT_DELAY_MS);
       return () => clearTimeout(timer);
     }
   }, [scan.scanComplete, phase]);

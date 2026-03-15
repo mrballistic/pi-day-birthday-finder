@@ -51,13 +51,13 @@ const strategies: SearchStrategy[] = [
     badge: '🌟 Full Date Match',
   },
   {
-    format: (d) => `${pad(d.getMonth() + 1)}${pad(d.getDate())}${(d.getFullYear() % 100).toString().padStart(2, '0')}`,
+    format: (d) => `${pad(d.getMonth() + 1)}${pad(d.getDate())}${pad(d.getFullYear() % 100)}`,
     matchType: 'short-year',
     label: 'Date Match (Short Year)',
     badge: '🎂 Date Match (Short Year)',
   },
   {
-    format: (d) => `${pad(d.getDate())}${pad(d.getMonth() + 1)}${(d.getFullYear() % 100).toString().padStart(2, '0')}`,
+    format: (d) => `${pad(d.getDate())}${pad(d.getMonth() + 1)}${pad(d.getFullYear() % 100)}`,
     matchType: 'short-year',
     label: 'Date Match (Intl Short Year)',
     badge: '🎂 Date Match (Short Year)',

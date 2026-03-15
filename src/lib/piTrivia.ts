@@ -25,16 +25,13 @@ export const PI_TRIVIA: string[] = [
   "Leonhard Euler popularized the use of π in mathematics in the 1730s.",
 ];
 
+import { shuffleArray } from './utils';
+
 /**
- * Returns a new shuffled copy of the trivia array using the Fisher-Yates algorithm.
+ * Returns a new shuffled copy of the trivia array.
  * Called on each scan start so users see different facts on repeat visits.
  * @returns A randomly ordered copy of {@link PI_TRIVIA}.
  */
 export function shuffleTrivia(): string[] {
-  const arr = [...PI_TRIVIA];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
+  return shuffleArray(PI_TRIVIA);
 }

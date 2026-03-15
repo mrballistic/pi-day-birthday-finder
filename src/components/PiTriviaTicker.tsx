@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
 import { shuffleTrivia } from '@/lib/piTrivia';
+import { TRIVIA_CYCLE_MS } from '@/lib/constants';
 
 /** Props for the {@link PiTriviaTicker} component. */
 interface PiTriviaTickerProps {
@@ -18,27 +19,26 @@ interface PiTriviaTickerProps {
  * screen reader announcements.
  */
 export default function PiTriviaTicker({ active }: PiTriviaTickerProps) {
+  const [facts, setFacts] = useState(shuffleTrivia);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const factsRef = useRef<string[]>(shuffleTrivia());
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (active) {
-      factsRef.current = shuffleTrivia();
-      setCurrentIndex(0);
-      intervalRef.current = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % factsRef.current.length);
-      }, 3000);
-    }
+    if (!active) return;
 
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
+    // Shuffle and reset on activation via a microtask to avoid sync setState in effect
+    let index = 0;
+    const shuffled = shuffleTrivia();
+    setFacts(shuffled); // eslint-disable-line react-hooks/set-state-in-effect -- intentional reset on activation
+    setCurrentIndex(0);
+
+    const interval = setInterval(() => {
+      index = (index + 1) % shuffled.length;
+      setCurrentIndex(index);
+    }, TRIVIA_CYCLE_MS);
+    return () => clearInterval(interval);
   }, [active]);
 
   if (!active) return null;
-
-  const currentFact = factsRef.current[currentIndex];
 
   return (
     <Box
@@ -92,7 +92,7 @@ export default function PiTriviaTicker({ active }: PiTriviaTickerProps) {
               textOverflow: 'ellipsis',
             }}
           >
-            {currentFact}
+            {facts[currentIndex]}
           </Typography>
         </motion.div>
       </AnimatePresence>

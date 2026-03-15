@@ -1,3 +1,5 @@
+import { PI_DIGIT_COUNT } from './constants';
+
 /**
  * Generates a human-readable fun fact based on the match position in pi.
  * Returns different messages for early matches vs. deep positions.
@@ -5,7 +7,7 @@
  * @returns A fun fact string describing how far into pi the position is.
  */
 export function generateFunFact(position: number): string {
-  const percentage = ((position / 5_000_000) * 100).toFixed(4);
+  const percentage = ((position / PI_DIGIT_COUNT) * 100).toFixed(4);
 
   if (position <= 100) {
     return `That's incredibly early — within the first 100 digits! Most people never memorize that far.`;
