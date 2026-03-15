@@ -4,6 +4,8 @@ A flashy single-page app that finds your birthday in the first 5,000,000 digits 
 
 Built for Pi Day (March 14).
 
+**Live:** [pi-day-birthday-finder.vercel.app](https://pi-day-birthday-finder.vercel.app)
+
 ## Demo
 
 1. Pick your birthday from the date picker
@@ -17,6 +19,7 @@ Built for Pi Day (March 14).
 - **Framer Motion** — phase transitions and ticker animations
 - **canvas-confetti** — celebration effects
 - **Google Fonts** — Inter (body) + JetBrains Mono (digits)
+- **Vercel Analytics** — page view tracking
 
 ## Getting Started
 
