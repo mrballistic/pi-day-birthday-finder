@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pi-day-birthday-finder.vercel.app/sitemap.xml
