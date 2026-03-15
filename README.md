@@ -1,6 +1,6 @@
 # Pi Day Birthday Finder
 
-A flashy single-page app that finds your birthday in the first 1,000,000 digits of π. Enter your birthday, watch a dramatic sci-fi digit scan, and discover exactly where your birthday hides in pi.
+A flashy single-page app that finds your birthday in the first 5,000,000 digits of π. Enter your birthday, watch a dramatic sci-fi digit scan, and discover exactly where your birthday hides in pi.
 
 Built for Pi Day (March 14).
 
@@ -29,19 +29,22 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## How It Works
 
-The app searches for your birthday in the first million digits of π using `String.prototype.indexOf()` — effectively instant. The 6-second scanning animation is purely cosmetic, with a three-phase speed ramp (slow start → blur speed → dramatic slowdown near the match).
+The app searches for your birthday in the first five million digits of π using `String.prototype.indexOf()` — effectively instant. The 6-second scanning animation is purely cosmetic, with a three-phase speed ramp (slow start → blur speed → dramatic slowdown near the match).
 
 ### Search Priority
 
-| Priority | Format     | Example (Jul 4, 1990) | Badge                  |
-|----------|------------|----------------------|------------------------|
-| 1        | MMDDYYYY   | `07041990`           | Full Date Match        |
-| 2        | DDMMYYYY   | `04071990`           | Full Date Match (Intl) |
-| 3        | MMDD       | `0704`               | Month+Day Match        |
-| 4        | MMDDYY     | `070490`             | Date Match (Short Year)|
-| 5        | MD         | `74`                 | Partial Match          |
+Strategies are tried longest-first to maximize match quality:
 
-A 2-digit match is guaranteed within 1M digits.
+| Priority | Format     | Example (Jul 4, 1990) | Badge                      |
+|----------|------------|----------------------|----------------------------|
+| 1        | MMDDYYYY   | `07041990`           | Full Date Match            |
+| 2        | DDMMYYYY   | `04071990`           | Full Date Match (Intl)     |
+| 3        | MMDDYY     | `070490`             | Date Match (Short Year)    |
+| 4        | DDMMYY     | `040790`             | Date Match (Intl Short Year)|
+| 5        | MMDD       | `0704`               | Month+Day Match            |
+| 6        | MD         | `74`                 | Partial Match              |
+
+A 2-digit match is guaranteed within 5M digits.
 
 ## Scripts
 
