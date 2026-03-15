@@ -49,12 +49,29 @@ A 2-digit match is guaranteed within 5M digits.
 ## Scripts
 
 ```bash
-npm run dev       # Start dev server
-npm run build     # Production build
-npm run start     # Start production server
-npm run lint      # Run ESLint
+npm run dev            # Start dev server
+npm run build          # Production build
+npm run start          # Start production server
+npm run lint           # Run ESLint
+npm test               # Run unit tests
+npm run test:watch     # Run tests in watch mode
+npm run test:coverage  # Run tests with coverage report
 node scripts/generate-pi.js  # Regenerate pi digits JSON
 ```
+
+## Testing
+
+80 unit tests covering all lib modules and hooks using [Vitest](https://vitest.dev/). Coverage thresholds enforced at 80% for statements, branches, functions, and lines.
+
+```
+File               | % Stmts | % Branch | % Funcs | % Lines
+-------------------|---------|----------|---------|--------
+All files          |   98.42 |    94.59 |     100 |   99.16
+```
+
+## CI
+
+GitHub Actions runs lint, tests (with coverage), and build on every push and PR against `main`, on Node 22 and 24.
 
 ## License
 

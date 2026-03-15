@@ -7,15 +7,19 @@ on:
     branches: [main]
 
 jobs:
-  lint-and-build:
+  ci:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22, 24]
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ matrix.node-version }}
           cache: npm
 
       - name: Install dependencies
@@ -23,6 +27,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Test
+        run: npm run test:coverage
 
       - name: Build
         run: npm run build
