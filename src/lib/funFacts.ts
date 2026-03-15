@@ -5,7 +5,7 @@
  * @returns A fun fact string describing how far into pi the position is.
  */
 export function generateFunFact(position: number): string {
-  const percentage = ((position / 1_000_000) * 100).toFixed(4);
+  const percentage = ((position / 5_000_000) * 100).toFixed(4);
 
   if (position <= 100) {
     return `That's incredibly early — within the first 100 digits! Most people never memorize that far.`;
@@ -14,10 +14,10 @@ export function generateFunFact(position: number): string {
     return `That's within the first 1,000 digits — only serious π enthusiasts memorize this deep!`;
   }
   if (position <= 10000) {
-    return `That's ${percentage}% of the way through the first million digits of π.`;
+    return `That's ${percentage}% of the way through the first five million digits of π.`;
   }
   if (position <= 100000) {
-    return `Position ${position.toLocaleString()} — that's ${percentage}% into the first million digits!`;
+    return `Position ${position.toLocaleString()} — that's ${percentage}% into the first five million digits!`;
   }
-  return `Way out at position ${position.toLocaleString()} — ${percentage}% through the first million digits of π!`;
+  return `Way out at position ${position.toLocaleString()} — ${percentage}% through the first five million digits of π!`;
 }

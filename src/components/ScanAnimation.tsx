@@ -34,7 +34,7 @@ export default function ScanAnimation({
   matchPosition,
   matchLength,
 }: ScanAnimationProps) {
-  const progress = (currentPosition / 1_000_000) * 100;
+  const progress = (currentPosition / 5_000_000) * 100;
 
   return (
     <motion.div
@@ -87,7 +87,7 @@ export default function ScanAnimation({
               mb: 1,
             }}
           >
-            Scanning digit {currentPosition.toLocaleString()} of 1,000,000
+            Scanning digit {currentPosition.toLocaleString()} of 5,000,000
           </Typography>
           <LinearProgress
             variant="determinate"

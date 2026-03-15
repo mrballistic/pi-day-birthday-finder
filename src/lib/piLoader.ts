@@ -2,7 +2,7 @@
 let cachedDigits: string | null = null;
 
 /**
- * Loads the first 1,000,000 digits of π from the static JSON file.
+ * Loads the first 5,000,000 digits of π from the static JSON file.
  * Results are cached in memory so subsequent calls return instantly.
  * @returns The pi digit string (digits after the decimal point).
  * @throws If the fetch request to `/pi-digits.json` fails.

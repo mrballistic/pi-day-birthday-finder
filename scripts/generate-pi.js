@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * generate-pi.js
- * Downloads or computes the first 1,000,000 digits of pi after the decimal point
+ * Downloads or computes the first 5,000,000 digits of pi after the decimal point
  * and saves them to public/pi-digits.json
  */
 
@@ -12,13 +12,13 @@ const http = require('http');
 
 const OUTPUT_PATH = path.join(__dirname, '..', 'public', 'pi-digits.json');
 const KNOWN_PREFIX = '14159265358979323846';
-const REQUIRED_DIGITS = 1_000_000;
+const REQUIRED_DIGITS = 5_000_000;
 
-// URLs to try in order
+// URLs to try in order (5M+ digit sources first, then 1M fallbacks)
 const SOURCES = [
+  'https://pi2e.ch/blog/wp-content/uploads/2017/03/pi_dec_10m.txt',
+  'http://pi2e.ch/blog/wp-content/uploads/2017/03/pi_dec_10m.txt',
   'https://pi2e.ch/blog/wp-content/uploads/2017/03/pi_dec_1m.txt',
-  'https://www.gutenberg.org/files/50456/50456-0.txt', // Project Gutenberg Pi (may have noise)
-  'http://www.pi2e.ch/blog/wp-content/uploads/2017/03/pi_dec_1m.txt',
 ];
 
 function fetchUrl(url) {
