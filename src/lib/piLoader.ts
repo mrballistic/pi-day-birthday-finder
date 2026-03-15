@@ -16,6 +16,9 @@ export async function loadPiDigits(): Promise<string> {
   }
 
   const data = await response.json();
-  cachedDigits = data.digits;
+  if (typeof data?.digits !== 'string' || data.digits.length === 0) {
+    throw new Error('Invalid pi digits data format');
+  }
+  cachedDigits = data.digits as string;
   return cachedDigits!;
 }

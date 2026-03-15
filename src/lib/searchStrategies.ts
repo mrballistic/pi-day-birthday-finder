@@ -34,8 +34,8 @@ function pad(n: number, len: number = 2): string {
 }
 
 /**
- * Ordered list of search strategies, tried from highest to lowest priority:
- * MMDDYYYY → DDMMYYYY → MMDD → MMDDYY → MD.
+ * Ordered list of search strategies, tried from longest to shortest match:
+ * MMDDYYYY → DDMMYYYY → MMDDYY → DDMMYY → MMDD → MD.
  */
 const strategies: SearchStrategy[] = [
   {
@@ -51,16 +51,22 @@ const strategies: SearchStrategy[] = [
     badge: '🌟 Full Date Match',
   },
   {
-    format: (d) => `${pad(d.getMonth() + 1)}${pad(d.getDate())}`,
-    matchType: 'month-day',
-    label: 'Month+Day Match',
-    badge: '🎂 Month+Day Match',
-  },
-  {
     format: (d) => `${pad(d.getMonth() + 1)}${pad(d.getDate())}${(d.getFullYear() % 100).toString().padStart(2, '0')}`,
     matchType: 'short-year',
     label: 'Date Match (Short Year)',
     badge: '🎂 Date Match (Short Year)',
+  },
+  {
+    format: (d) => `${pad(d.getDate())}${pad(d.getMonth() + 1)}${(d.getFullYear() % 100).toString().padStart(2, '0')}`,
+    matchType: 'short-year',
+    label: 'Date Match (Intl Short Year)',
+    badge: '🎂 Date Match (Short Year)',
+  },
+  {
+    format: (d) => `${pad(d.getMonth() + 1)}${pad(d.getDate())}`,
+    matchType: 'month-day',
+    label: 'Month+Day Match',
+    badge: '🎂 Month+Day Match',
   },
   {
     format: (d) => `${d.getMonth() + 1}${d.getDate()}`,
@@ -73,7 +79,7 @@ const strategies: SearchStrategy[] = [
 /**
  * Searches the pi digit string for a birthday using multiple format strategies.
  * Tries each strategy in priority order and returns the first match found.
- * Uses `String.prototype.indexOf()` for instant search on 1M characters.
+ * Uses `String.prototype.indexOf()` for instant search on 5M characters.
  *
  * @param piDigits - The full pi digit string (digits after the decimal).
  * @param birthday - The birthday Date to search for.

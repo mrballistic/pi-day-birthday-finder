@@ -27,6 +27,7 @@ export default function ResultCard({ result, piDigits, onReset }: ResultCardProp
   const [displayCount, setDisplayCount] = useState(0);
   const [showCard, setShowCard] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('Copied to clipboard!');
   const animatedRef = useRef(false);
 
   // Delay card appearance
@@ -65,14 +66,20 @@ export default function ResultCard({ result, piDigits, onReset }: ResultCardProp
   const highlightEnd = highlightStart + result.matchString.length;
 
   const handleShare = async () => {
-    const text = `My birthday is hiding at position ${result.position.toLocaleString()} in π! Find yours at ${typeof window !== 'undefined' ? window.location.href : ''} #PiDay`;
+    const url = typeof window !== 'undefined'
+      ? `${window.location.origin}${window.location.pathname}`
+      : '';
+    const text = `My birthday is hiding at position ${result.position.toLocaleString()} in π! Find yours at ${url} #PiDay`;
     try {
+      if (!navigator?.clipboard?.writeText) {
+        throw new Error('Clipboard API not available');
+      }
       await navigator.clipboard.writeText(text);
-      setToastOpen(true);
+      setToastMessage('Copied to clipboard!');
     } catch {
-      // Fallback
-      setToastOpen(true);
+      setToastMessage('Could not copy — try manually!');
     }
+    setToastOpen(true);
   };
 
   const badgeColor =
@@ -220,7 +227,7 @@ export default function ResultCard({ result, piDigits, onReset }: ResultCardProp
         open={toastOpen}
         autoHideDuration={3000}
         onClose={() => setToastOpen(false)}
-        message="Copied to clipboard!"
+        message={toastMessage}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
     </>
